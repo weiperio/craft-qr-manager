@@ -53,7 +53,7 @@ class QrManager extends Plugin
         parent::init();
 
         // Defer most setup tasks until Craft is fully initialized
-        Craft::$app->onInit(function() {
+        Craft::$app->onInit(function () {
             $this->attachEventHandlers();
             // ...
         });
@@ -113,7 +113,7 @@ class QrManager extends Plugin
         });
 
         // Register CP Nav item
-        Event::on(Cp::class, Cp::EVENT_REGISTER_CP_NAV_ITEMS, function(RegisterCpNavItemsEvent $event) {
+        Event::on(Cp::class, Cp::EVENT_REGISTER_CP_NAV_ITEMS, function (RegisterCpNavItemsEvent $event) {
             $event->navItems[] = [
                 'url' => 'qr-manager/routes',
                 'label' => 'QR Manager',
@@ -126,17 +126,17 @@ class QrManager extends Plugin
         });
 
         // Register additional button on Entry edit page
-        Event::on(Element::class, Element::EVENT_DEFINE_ADDITIONAL_BUTTONS, function(DefineHtmlEvent $event) {
+        Event::on(Element::class, Element::EVENT_DEFINE_ADDITIONAL_BUTTONS, function (DefineHtmlEvent $event) {
             $element = $event->sender;
-            if ($element instanceof \craft\elements\Entry ) {
+            if ($element instanceof \craft\elements\Entry) {
                 $event->html = Craft::$app->getView()->renderTemplate('qr-manager/entries/_button', ['redirectUri' => '/' . $element->uri, 'entry' => $element]);
             }
         });
 
         // Register additional meta data on Entry edit page
-        Event::on(Element::class, Element::EVENT_DEFINE_SIDEBAR_HTML, function(DefineHtmlEvent $event) {
+        Event::on(Element::class, Element::EVENT_DEFINE_SIDEBAR_HTML, function (DefineHtmlEvent $event) {
             $element = $event->sender;
-            if ($element instanceof \craft\elements\Entry ) {
+            if ($element instanceof \craft\elements\Entry) {
                 // Get all the routes that have a redirectUri that matches the entry's URI and belong to the current site
                 $routes = Route::find()
                     ->siteId($element->siteId)
@@ -172,32 +172,33 @@ class QrManager extends Plugin
         // Throw error on 404 event
         Event::on(
             Response::class,
-            Response::EVENT_BEFORE_SEND, function() {
+            Response::EVENT_BEFORE_SEND,
+            function () {
             // Get request path
-            $request = Craft::$app->getRequest();
-            $path = $request->getPathInfo(); // Get the requested path
+                $request = Craft::$app->getRequest();
+                $path = $request->getPathInfo(); // Get the requested path
 
             // Check if Craft would resolve the path to a template (false indicates potential 404)
-            if (!Craft::$app->getView()->resolveTemplate($path)) {
-
-                // Run your custom query based on $path (replace with your actual query logic)
-                $route = Route::find()
+                if (!Craft::$app->getView()->resolveTemplate($path)) {
+                    // Run your custom query based on $path (replace with your actual query logic)
+                    $route = Route::find()
                     ->siteId('*')
                     ->entryUri($path)
                     ->one();
 
-                if ($route) {
-                    // Found an entry, gather analytics data
-                    $userAgent = $request->getUserAgent();
-                    $referer = $request->getReferrer() ?? "";
+                    if ($route) {
+                        // Found an entry, gather analytics data
+                        $userAgent = $request->getUserAgent();
+                        $referer = $request->getReferrer() ?? "";
 
-                    // Add the analytics data
-                    QrManager::getInstance()->routes->addRouteAnalytics($route->id, $userAgent, $referer);
-                    
-                    // So redirect or render as needed
-                    return Craft::$app->getResponse()->redirect($route->redirectUri); // Example redirection
+                        // Add the analytics data
+                        QrManager::getInstance()->routes->addRouteAnalytics($route->id, $userAgent, $referer);
+
+                        // So redirect or render as needed
+                        return Craft::$app->getResponse()->redirect($route->redirectUri); // Example redirection
+                    }
                 }
             }
-        });
+        );
     }
 }

@@ -50,7 +50,7 @@ class RoutesController extends Controller
     public function actionCreate(): Response
     {
         $route = Craft::createObject(RouteElement::class);
-        $route->title = Craft::t('qr-manager', Craft::$app->getRequest()->getParam('title') . ' - ' ?? '');
+        $route->title = Craft::t('qr-manager', Craft::$app->getRequest()->getParam('title') ?? '');
         // Get the redirect uri param
         $redirectUri = Craft::$app->getRequest()->getParam('redirectUri');
         if ($redirectUri != null) {
@@ -88,8 +88,7 @@ class RoutesController extends Controller
         $response = $this->asCpScreen(Craft::$app->runAction('elements/edit', [
             'elementType' => RouteElement::class,
             'elementId' => $route->id,
-            'element' => $route])
-        );
+            'element' => $route]));
 
         // Send as cpScreen
 
@@ -98,7 +97,7 @@ class RoutesController extends Controller
         //         'fresh' => 1,
         //     ]));
         // }
-        
+
         // Call the element edit controller as cpScreen
         return $response;
     }

@@ -2,7 +2,6 @@
 
 namespace weiperio\craftqrmanager\elements\db;
 
-use Craft;
 use craft\helpers\Db;
 use craft\elements\db\ElementQuery;
 
@@ -20,7 +19,7 @@ class RouteQuery extends ElementQuery
 
     public function entryUri($value): self
     {
-        $this->entryUri = "/" . $value;
+        $this->entryUri = $value;
 
         return $this;
     }
@@ -35,13 +34,16 @@ class RouteQuery extends ElementQuery
     {
         $this->joinElementTable(Table::ROUTES);
 
+        $alias = Db::rawTableShortName(Table::ROUTES);
+
         $this->query->select([
-            Table::ROUTES . '.entryUri',
-            Table::ROUTES . '.redirectUri',
+            $alias . '.entryUri',
+            $alias . '.redirectUri',
         ]);
 
         if ($this->entryUri) {
             $entryUri = $this->entryUri;
+
             $this->subQuery->andWhere(new Expression("`entryUri` REGEXP :entryUri", [':entryUri' => "^/?{$entryUri}"]));
         }
 
