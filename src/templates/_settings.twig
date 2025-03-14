@@ -52,13 +52,14 @@
 {% block content %}
 <div class="qrm-flex qrm-items-start">
 <div class="qrm-flex-1">
-<h2>{{ "QR Settings"|t('app') }}</h2>
+<h2 class="qrm-text-lg qrm-font-bold">{{ "QR Settings"|t('app') }}</h2>
 <p>Define a custom QR code to suit your brand.</p>
-
+<hr class="qrm-mt-6 qrm-mr-6 qrm-block">
 <input type="hidden" name="action" value="qr-manager/settings/save-site-settings">
 <input type="hidden" name="siteHandle" value="{{ selectedSite.handle }}">
+<input type="hidden" name="redirect" value="{{ '/admin/settings/plugins/qr-manager?site=' ~ selectedSite.handle }}">
 
-{{ redirectInput('settings/plugins/qr-manager?site=' ~ selectedSite.handle) }}
+{# {{ redirectInput(siteUrl ~ '/admin/settings/plugins/qr-manager?site=' ~ selectedSite.handle) }} #}
 
 {# Color field #}
 {{ forms.colorField({

@@ -50,6 +50,9 @@ class RoutesController extends Controller
     public function actionCreate(): Response
     {
         $route = Craft::createObject(RouteElement::class);
+        // Enable the route by default
+        $route->enabled = true;
+        // Set the route title
         $route->title = Craft::t('qr-manager', Craft::$app->getRequest()->getParam('title') ?? '');
         // Get the redirect uri param
         $redirectUri = Craft::$app->getRequest()->getParam('redirectUri');
@@ -75,7 +78,7 @@ class RoutesController extends Controller
         $user = static::currentUser();
 
         // Save it
-        $success = Craft::$app->getDrafts()->saveElementAsDraft($route, $user->id, null, false);
+        $success = Craft::$app->elements->saveElement($route);
 
         if (!$success) {
             return $this->asModelFailure($route, Craft::t('app', 'Couldn’t create {type}.', [

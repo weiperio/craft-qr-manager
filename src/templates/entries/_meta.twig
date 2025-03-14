@@ -22,8 +22,6 @@
 </fieldset>
 <hr />
 
-{% set settings = craft.app.plugins.getPlugin('qr-manager').settings %}
-
 {% do view.registerAssetBundle("weiperio\\craftqrmanager\\web\\assets\\qrmanagerbundle\\QrManagerBundleAsset") %}
 
 {% js %}
@@ -38,7 +36,9 @@
     window.QR_MANAGER_CONFIG.QR_CODE_ERROR_CORRECTION = "{{ settings.errorCorrectionLevel }}";
     {% if settings.logo %}
     {% set logo = craft.assets.id(settings.logo[0]).one() %}
+    {% if logo %}
     window.QR_MANAGER_CONFIG.QR_CODE_LOGO = "{{ logo.url }}";
+    {% endif %}
     {% endif %}
     
 {% endjs %}

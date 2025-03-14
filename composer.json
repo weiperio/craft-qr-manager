@@ -2,7 +2,7 @@
   "name": "weiperio/craft-qr-manager",
   "description": "Manage your QR code campaigns all in one place. Create branded QR codes and handle redirects intelligently to ensure proper attribution for your campaign sources.",
   "type": "craft-plugin",
-  "version": "5.0.3.2",
+  "version": "5.0.3.3",
   "license": "proprietary",
   "support": {
     "email": "chris.weiper@gmail.com"

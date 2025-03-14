@@ -128,8 +128,10 @@ class QrManager extends Plugin
         // Register additional button on Entry edit page
         Event::on(Element::class, Element::EVENT_DEFINE_ADDITIONAL_BUTTONS, function (DefineHtmlEvent $event) {
             $element = $event->sender;
+            // Get site handle
+            $siteHandle = Craft::$app->getRequest()->getParam('site');
             if ($element instanceof \craft\elements\Entry) {
-                $event->html = Craft::$app->getView()->renderTemplate('qr-manager/entries/_button', ['redirectUri' => '/' . $element->uri, 'entry' => $element]);
+                $event->html = Craft::$app->getView()->renderTemplate('qr-manager/entries/_button', ['redirectUri' => '/' . $element->uri, 'entry' => $element, 'siteHandle' => $siteHandle]);
             }
         });
 
@@ -141,6 +143,8 @@ class QrManager extends Plugin
                 $routes = Route::find()
                     ->siteId($element->siteId)
                     ->redirectUri($element->uri)
+                    // Get all status
+                    ->status(['disabled', 'enabled'])
                     ->all();
                 $routeElementChips = [];
                 foreach ($routes as $route) {
